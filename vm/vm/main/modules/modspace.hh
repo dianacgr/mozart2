@@ -143,6 +143,58 @@ public:
       }
     }
   };
+  
+  class Show: public Builtin<Show> {
+  public:
+    Show(): Builtin("show") {}
+
+    static void call(VM vm, In value) {
+      auto& config = vm->getPropertyRegistry().config;
+
+      auto& stream = std::cout;
+      stream << repr(vm, value,config.printDepth,config.printWidth);
+      stream << std::endl;
+    }
+  };
+  
+  //Pruebas intvar
+  class Newint: public Builtin<Newint> {
+  public:
+    Newint(): Builtin("newInt") {}
+
+    static void call(VM vm, In min, In max, Out result) {
+      result = CstIntVar::build(vm,min,max);
+    
+    }
+  };
+  
+  class IsInt: public Builtin<IsInt> {
+  public:
+    IsInt(): Builtin("isInt") {}
+
+    static void call(VM vm, In var, Out result) {
+      result = build(vm, IntVarLike(var).isIntVarLike(vm));
+    }
+  };
+  
+  class Min: public Builtin<Min> {
+  public:
+    Min(): Builtin("min") {}
+
+    static void call(VM vm, In var, Out result) {
+      result = build(vm, IntVarLike(var).min(vm));
+    }
+  };
+  
+  class IsIn: public Builtin<IsIn> {
+  public:
+    IsIn(): Builtin("isIn") {}
+
+    static void call(VM vm, In var, In n, Out result) {
+      result = build(vm, IntVarLike(var).isIn(vm,n));
+    }
+  };
+  
 };
 
 }

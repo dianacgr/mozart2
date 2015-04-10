@@ -31,6 +31,7 @@ functor
 
 require
    Boot_Space at 'x-oz://boot/Space'
+   FDB at 'x-oz://boot/IntVar'
 
 export
    New
@@ -42,6 +43,9 @@ export
    Commit
    Kill
    Choose
+   Show
+%%Pruebas variables 
+   NewInt
 
 define
 
@@ -54,5 +58,9 @@ define
    Commit     = Boot_Space.commit
    Kill       = Boot_Space.kill
    Choose     = Boot_Space.choose
-
+   Show 	  = Boot_Space.show
+%%Pruebas Diana
+   NewInt 	  = FDB.new
+  
+   
 end

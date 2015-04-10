@@ -59,4 +59,6 @@
 #include "variables-decl.hh"
 #include "weakrefs-decl.hh"
 
+#include "cstintvar-decl.hh"
+
 #endif // MOZART_COREDATATYPES_DECL_H

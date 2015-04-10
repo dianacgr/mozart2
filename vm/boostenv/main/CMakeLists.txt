@@ -9,7 +9,7 @@ separate_arguments(SPLIT_CXX_FLAGS UNIX_COMMAND "${CMAKE_CXX_FLAGS}")
 set(MOZART_GENERATOR_FLAGS "${MOZART_GENERATOR_FLAGS}" "${SPLIT_CXX_FLAGS}")
 
 # GMP (optional)
-include(FindGMP)
+#include(FindGMP)
 if(GMP_FOUND)
   include_directories(${GMP_INCLUDE_DIR})
   add_definitions(-DUSE_GMP)
@@ -29,6 +29,12 @@ if(MINGW)
   set(CXX_STD_OPT -std=gnu++0x)
 else()
   set(CXX_STD_OPT -std=c++0x)
+endif()
+
+if(BUILD_CSS)
+  list(APPEND MOZART_GENERATOR_FLAGS "-DVM_HAS_CSS=1" "-I${GECODE_INCLUDES}")
+  include_directories(${GECODE_INCLUDES})
+  add_definitions("-DVM_HAS_CSS=1")
 endif()
 
 # Mozart VM library
@@ -86,6 +92,11 @@ add_custom_target(genboostsources
   VERBATIM)
 
 # Boost environment library
+
+if(BUILD_CSS)
+  add_definitions(-DVM_HAS_CSS=1)
+  include_directories(${GECODE_INCLUDES})
+endif()
 
 add_library(mozartvmboost boostvm.cc boostenvmodules.cc)
 add_dependencies(mozartvmboost genboostsources)

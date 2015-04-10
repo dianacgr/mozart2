@@ -40,6 +40,7 @@
 #include "modules/moddictionary.hh"
 #include "modules/modexception.hh"
 #include "modules/modint.hh"
+#include "modules/modintvar.hh"
 #include "modules/modfloat.hh"
 #include "modules/modforeignpointer.hh"
 #include "modules/modgnode.hh"

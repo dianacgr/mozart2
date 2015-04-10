@@ -25,6 +25,10 @@ endif()
 include_directories("${GTEST_SRC_DIR}" "${GTEST_SRC_DIR}/include")
 
 # The testing executable
+if(BUILD_CSS)
+  list(APPEND VMTEST_SRCS csttest.cc)
+  add_definitions(-DVM_HAS_CSS=1)
+endif()
 
 add_executable(vmtest testutils.cc sanitytest.cc smallinttest.cc floattest.cc
   atomtest.cc gctest.cc coderstest.cc utftest.cc stringtest.cc

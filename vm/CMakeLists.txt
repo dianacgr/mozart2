@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project(MOZARTVM)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-support")
+option(BUILD_CSS "Builds the constraint subsystem" Yes)
+
 include(ExternalProject)
 set(ep_base "${CMAKE_BINARY_DIR}/externals")
 set_property(DIRECTORY PROPERTY "EP_BASE" ${ep_base})
@@ -16,6 +19,14 @@ set(GTEST_BUILD_DIR ${DEFAULT_GTEST_BUILD_DIR} CACHE PATH "Path to GTest build")
 
 set(MOZART_GENERATOR_FLAGS "${DEFAULT_MOZART_GENERATOR_FLAGS}" CACHE STRING
     "Additional flags for the generator parser (clang)")
+
+if (BUILD_CSS)
+	include(Gecode)
+	set(MOZART_GENERATOR_FLAGS 
+	  "-DVM_HAS_CSS=1" "-I${GECODE_INCLUDES}" ${MOZART_GENERATOR_FLAGS})
+	include_directories("${GECODE_INCLUDES}")
+	message(STATUS "Generator flags: ${MOZART_GENERATOR_FLAGS}")
+endif()
 
 add_subdirectory(generator)
 
