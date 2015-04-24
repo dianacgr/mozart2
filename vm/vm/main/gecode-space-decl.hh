@@ -13,14 +13,19 @@
 #include <gecode/kernel.hh>
 #include <gecode/int.hh>
 #include <gecode/set.hh>
+#include <string>
 
 namespace mozart {
 class GecodeSpace : public Gecode::Space {
 private:
   //static std::vector<GecodeSpace*> alive;
+  
   Gecode::SpaceStatus lastStatus;
+  //set of integer variables 
   std::vector<Gecode::IntVar> _intVars;
+  //set of set variables 
   std::vector<Gecode::SetVar> _setVars;
+  //set of boolean variables 
   std::vector<Gecode::BoolVar> _boolVars;
 public:
   inline
@@ -53,6 +58,8 @@ public:
   Gecode::BoolVar& boolVar(size_t index);
   inline
   size_t newBoolVar();
+  inline
+  void inspect();
   };
 }
 

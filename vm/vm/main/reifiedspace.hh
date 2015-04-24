@@ -229,6 +229,21 @@ void ReifiedSpace::killSpace(RichNode self, VM vm) {
   space->kill(vm);
 }
 
+void ReifiedSpace::inspectSpace(RichNode self, VM vm) {
+  
+  Space* space = getSpace();
+
+#ifdef VM_HAS_CSS
+  if(space->hasConstraintSpace()){
+	  space->getCstSpace().inspect();	
+  }else{
+	std::cout<<"no tiene Gecode-space"<<std::endl;  
+  }
+#else
+  std::cout<<"sin soporte para restricciones"<<std::endl; 
+#endif
+}
+
 /////////////////
 // FailedSpace //
 /////////////////
@@ -262,6 +277,11 @@ void FailedSpace::killSpace(VM vm) {
   // nothing to do
 }
 
+void FailedSpace::inspectSpace(VM vm) {
+  // nothing to do
+
+}
+
 /////////////////
 // MergedSpace //
 /////////////////
@@ -293,6 +313,11 @@ UnstableNode MergedSpace::cloneSpace(VM vm) {
 
 void MergedSpace::killSpace(VM vm) {
   // nothing to do
+}
+
+void MergedSpace::inspectSpace(VM vm) {
+  // nothing to do
+
 }
 
 }

@@ -26,6 +26,7 @@
 #define MOZART_SMALLINT_DECL_H
 
 #include "mozartcore-decl.hh"
+#include <gecode/int.hh>
 
 namespace mozart {
 
@@ -123,6 +124,31 @@ public:
 
   inline
   UnstableNode abs(VM vm);
+
+#ifdef VM_HAS_CSS
+  // ConstraintVar interface
+  inline
+  bool assigned(VM vm);
+  // IntVarLike interface
+  inline
+  bool isIntVarLike(VM vm);
+
+  inline
+  Gecode::IntVar& intVar(RichNode self, VM vm);
+
+  inline
+  UnstableNode min(VM vm);
+
+  inline
+  UnstableNode max(VM vm);
+
+  inline
+  UnstableNode value(VM vm);
+
+  inline
+  UnstableNode isIn(VM vm, RichNode right);
+
+#endif
 
 public:
   // Miscellaneous

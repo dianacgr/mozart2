@@ -75,7 +75,7 @@ public:
 public:
   // Miscellaneous
   void printReprToStream(RichNode self, VM vm, std::ostream& out, int depth, int width) {
-    out << getVar();
+    out << "("<<_varIndex<<"):"<<getVar().min()<<"#"<<getVar().max();
   }
 private:
   // The actual representation of a constraint integer variable is a 
@@ -89,4 +89,4 @@ private:
 #endif	
 } // End namespace mozart
 
-#endif // __CSTINTVAR_DECL_H
+#endif // MOZART_CSTINTVAR_DECL_H

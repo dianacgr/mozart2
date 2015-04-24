@@ -51,7 +51,6 @@ public:
 
       // Create the thread {Proc Root}
       ozcalls::asyncOzCall(vm, space, target, *space->getRootVar());
-
       // Create the reification of the space
       result = ReifiedSpace::build(vm, space);
     }
@@ -157,41 +156,12 @@ public:
     }
   };
   
-  //Pruebas intvar
-  class Newint: public Builtin<Newint> {
+  class Inspect: public Builtin<Inspect> {
   public:
-    Newint(): Builtin("newInt") {}
+    Inspect(): Builtin("inspect") {}
 
-    static void call(VM vm, In min, In max, Out result) {
-      result = CstIntVar::build(vm,min,max);
-    
-    }
-  };
-  
-  class IsInt: public Builtin<IsInt> {
-  public:
-    IsInt(): Builtin("isInt") {}
-
-    static void call(VM vm, In var, Out result) {
-      result = build(vm, IntVarLike(var).isIntVarLike(vm));
-    }
-  };
-  
-  class Min: public Builtin<Min> {
-  public:
-    Min(): Builtin("min") {}
-
-    static void call(VM vm, In var, Out result) {
-      result = build(vm, IntVarLike(var).min(vm));
-    }
-  };
-  
-  class IsIn: public Builtin<IsIn> {
-  public:
-    IsIn(): Builtin("isIn") {}
-
-    static void call(VM vm, In var, In n, Out result) {
-      result = build(vm, IntVarLike(var).isIn(vm,n));
+    static void call(VM vm, In space) {
+      SpaceLike(space).inspectSpace(vm);
     }
   };
   

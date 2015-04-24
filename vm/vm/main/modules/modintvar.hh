@@ -39,7 +39,7 @@ public:
     }
   };
 
-/*  class Max: public Builtin<Max> {
+  class Max: public Builtin<Max> {
   public:
     Max(): Builtin("max") {}
 
@@ -57,7 +57,7 @@ public:
     }
   };
 
- */ class IsIn: public Builtin<IsIn> {
+  class IsIn: public Builtin<IsIn> {
   public:
     IsIn(): Builtin("isIn") {}
 
@@ -65,7 +65,7 @@ public:
       result = build(vm, IntVarLike(var).isIn(vm,n));
     }
   };
- /* class Inf: public Builtin<Inf> {
+  class Inf: public Builtin<Inf> {
   public:
     Inf(): Builtin("inf") {}
 
@@ -81,7 +81,7 @@ public:
     static void call(VM vm, Out result) {
       result = build(vm, Gecode::Int::Limits::max);
     }
-  };*/
+  };
 
 };
 } // builtins

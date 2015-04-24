@@ -4,12 +4,10 @@
 
 #ifndef MOZART_GENERATOR
 
-//#include "gecode-space-decl.hh"
 
 namespace mozart {
   GecodeSpace::GecodeSpace(void)
     : Gecode::Space(), lastStatus(Gecode::SS_BRANCH){
-    //std::cout << "Constructed gecode space" << std::endl;
     //alive.push_back(this);
   }
   
@@ -19,7 +17,6 @@ GecodeSpace::GecodeSpace(bool share, GecodeSpace& other)
     _setVars(other._setVars),
     _boolVars(other._boolVars)
 {
-  //std::cout << "Constructed gecode space (clone)" << std::endl;
   for(auto i = _intVars.size(); i--;)
     _intVars[i].update(*this,share,other._intVars[i]);
   for(auto i = _setVars.size(); i--;)
@@ -38,9 +35,9 @@ void GecodeSpace::propagate(void){
   lastStatus= this->status();
 }
 
-  int GecodeSpace::getLastStatus(void){
-    return (int) lastStatus;
-  }
+int GecodeSpace::getLastStatus(void){
+	return (int) lastStatus;
+}
 
   void GecodeSpace::fail(){
     Gecode::Space::fail();
@@ -90,6 +87,14 @@ size_t GecodeSpace::newBoolVar() {
   _boolVars.push_back(Gecode::BoolVar(*this,0,1));
   return _boolVars.size() - 1;
 }
+
+void GecodeSpace::inspect(){
+  for (auto i=0;i<_intVars.size();i++){
+	std::cout<<i<<" "<<_intVars[i]<<std::endl;
+  }
+  
+}
+	
 }
 
 #endif

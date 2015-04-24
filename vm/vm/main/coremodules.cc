@@ -50,6 +50,7 @@ void registerCoreModules(VM vm) {
   registerBuiltinModException(vm);
   registerBuiltinModInt(vm);
   registerBuiltinModIntVar(vm);
+  registerBuiltinModIntVarProp(vm);
   registerBuiltinModFloat(vm);
   registerBuiltinModForeignPointer(vm);
   registerBuiltinModGNode(vm);

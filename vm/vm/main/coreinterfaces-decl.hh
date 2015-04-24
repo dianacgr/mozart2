@@ -663,11 +663,9 @@ struct Interface<SpaceLike>:
     raiseTypeError(vm, "Space", self);
   }
   
-/*#ifdef VM_HAS_CSS
-  void info(RichNode self, VM vm) {
+  void inspectSpace(RichNode self, VM vm) {
     raiseTypeError(vm, "Space", self);
   }
-#endif*/
 
 };
 
@@ -771,7 +769,7 @@ struct Interface<StringLike>:
 };
 
 #ifdef VM_HAS_CSS
-/*class ConstraintVar;
+class ConstraintVar;
 template <>
 struct Interface<ConstraintVar>:
     ImplementedBy<SmallInt, CstIntVar>,
@@ -780,12 +778,12 @@ struct Interface<ConstraintVar>:
   bool assigned(RichNode self, VM vm) {
     raiseTypeError(vm, "ConstraintVar", self);
   }
-};*/
+};
 
 class IntVarLike;
 template<>
 struct Interface<IntVarLike>:
-    ImplementedBy<CstIntVar>,//SmallInt, CstIntVar>,
+    ImplementedBy<SmallInt, CstIntVar>,
   NoAutoReflectiveCalls {
 
   bool isIntVarLike(RichNode self, VM vm) {
@@ -811,6 +809,21 @@ struct Interface<IntVarLike>:
   UnstableNode isIn(RichNode self, VM vm, RichNode right) {
     raiseTypeError(vm, "IntVarLike", self);
   }    
+};
+
+class SetVarLike;
+template<>
+struct Interface<SetVarLike>:
+    ImplementedBy<CstSetVar>,
+  NoAutoReflectiveCalls {
+
+  bool isSetVarLike(RichNode self, VM vm) {
+    return false;
+  }
+
+  Gecode::SetVar& setVar(RichNode self, VM vm) {
+      raiseTypeError(vm, "SetVarLike", self);
+    }
 };
 
 /*class ConstraintSpace;

@@ -41,6 +41,7 @@
 #include "modules/modexception.hh"
 #include "modules/modint.hh"
 #include "modules/modintvar.hh"
+#include "modules/modintvarprop.hh"
 #include "modules/modfloat.hh"
 #include "modules/modforeignpointer.hh"
 #include "modules/modgnode.hh"

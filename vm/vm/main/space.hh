@@ -259,7 +259,7 @@ Space::Space(GR gr, Space* from) {
   }
   //Given than *from* space should be stable to allow copy, then there is
   //no need to create a propagationThread in this stage. Moreover, the
-  //space *from* should not contain a propagatioThread.
+  //space *from* should not contain a propagationThread.
   _propagator = nullptr;
   assert(!from->hasPropagationThread());
     
@@ -348,7 +348,6 @@ bool Space::merge(VM vm, Space* dest) {
   }
 #ifdef VM_HAS_CSS
   if(src->hasConstraintSpace()){
-    //anfelbar@: This is mandatory... I believe.
     assert(dest->hasConstraintSpace());
     //anfelbar@: Update all constraint vars of currentSpace.
     dest->getCstSpace().reflectVars(src->getCstSpace());
@@ -560,12 +559,12 @@ void Space::checkStability() {
     if(hasConstraintSpace()){
       assert(_cstSpace->stable());
       
-      if ( _cstSpace->getLastStatus() == 0){//failed space return immediately.
-	//if the mozart space is failed, then return failed (failed space is stronger than distributable space?)
+      if ( _cstSpace->getLastStatus()==0){//failed space return immediately.
+	//if the mozart space is failed, then return failed
 	bindStatusVar(vm, Atom::build(vm, vm->coreatoms.failed));
       }
-      else if (_cstSpace->getLastStatus() == 2){//distributable space then return alternatives(N).
-	//if the mozart space is succeded, then return this tuple (distributable space is stronger than succeded space?).
+      else if (_cstSpace->getLastStatus()==2){//distributable space then return alternatives(N).
+	//if the mozart space is succeded, then return this tuple 
 	bindStatusVar(vm,  buildTuple(vm, vm->coreatoms.alternatives, (nativeint)2));
       }
       else {//succeded space depends also on the mozart thread count
