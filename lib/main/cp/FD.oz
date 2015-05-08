@@ -77,6 +77,19 @@ prepare
                         val_range_max:   'INT_VAL_RANGE_MAX'
                         values_min:      'INT_VALUES_MIN'
 			values_max:      'INT_VALUES_MAX')
+
+   FddOptVarMap = map(naive:   0
+		      size:    1
+		      min:     2
+		      max:     3
+		      nbSusps: 4
+		      width:   5)
+   
+   FddOptValMap = map(min:      0
+		       mid:      1
+		       max:      2
+		       splitMin: 3
+		       splitMax: 4)
    
 export
 
@@ -89,7 +102,7 @@ export
    value:           FdValue
    
 %%% Telling Domains
-   int:             FdInt
+   int:            FdInt
    dom:		   FdDom
    decl:           FdDecl   
    list:           FdList
@@ -98,23 +111,21 @@ export
 
 %%% Symbolic propagators   
    distinct:       FdpDistinct
-   distinct2:      FdpDistinct2
 
 %%% Miscellaneous Propagator
    rel:            FdRel
    linear:         FdpLinear
-%%% Reflection
+%%% Distribution
+   distribute:     FdDistribute
 
    
 define
 
-   New = FDB.new
    %%% Finite Domains
    FdIs = FDB.is
    FdIsIn = FDB.isIn
    FdValue = FDB.value
 
-%%%%%%%%%%%%%DIANA
    FdInf = FDB.inf
    FdSup = FDB.sup
 
@@ -191,25 +202,28 @@ define
 
    proc {FdpDistinct Post}
       {FDP.distinct Post}
-   end
-
-   proc {FdpDistinct2 Post}
-      {FDP.distinct2 Post}
    end  
 
 %%% Simple relation over integer variables
    
-   proc {FdRel Post} 
-     W = {Record.width Post} 
-     R = Post.2
-   in
-   	case W
-   	of 2 then {FDP.relBetweenArray Post.1 FdRelType.R}
-   	[] 3 then {FDP.binaryRel Post.1 FdRelType.R Post.3}
+   proc {FdRel Post}
+      if {IsRecord Post} 
+      then
+	 W = {Record.width Post} 
+	 R = Post.2
+      in
+	 case W
+	 of 2 then {FDP.relBetweenArray Post.1 FdRelType.R}
+	 [] 3 then {FDP.binaryRel Post.1 FdRelType.R Post.3}
 %	[] 4 then {FDP.rel4 Post.1 FdRelType.R Post.3 Post.4}
-   	else
-   	   raise malFormed(post) end
-   	end
+	 else
+	    raise malFormed(post)
+	    end
+	 end
+      else
+	 raise malFormed(post hola)
+	 end 
+      end
    end
 
 %%% linear constraint for interger variable
@@ -217,7 +231,6 @@ define
       proc{FdpLinear Post}
    	W = {Record.width Post}
       in
-
 	case W
 	of 3 then
 	   {FDP.linear3 Post.1 FdRelType.(Post.2) Post.3}
@@ -234,5 +247,27 @@ define
 	    end
 	end
       end
-   
+
+%%% DISTRIBUTION
+
+      fun {PreProcessSpec Spec}
+	 case Spec of naive then generic(value:min order:naive)
+	 [] ff then generic(value:min order:size)
+	 [] split then generic(value:splitMin order:size)
+	 else
+	    raise malFormed(spec)
+	    end
+	 end
+      end
+
+      proc {FdDistribute RawSpec Vec}
+	 case {PreProcessSpec RawSpec}
+	 of generic(value:SelVal order:SelVar) then
+	    {FDP.distribute FddOptVarMap.SelVar FddOptValMap.SelVal Vec}
+	 else
+	    raise malFormed(post)
+	    end
+	 end
+      end
+
 end

@@ -136,7 +136,6 @@ public:
       } else {
         ChooseDistributor* distributor =
           new (vm) ChooseDistributor(vm, space, alternatives);
-
         space->setDistributor(distributor);
         result.copy(vm, *distributor->getVar());
       }
