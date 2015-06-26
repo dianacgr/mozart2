@@ -111,6 +111,11 @@ private:
   UnstableNode _var;
 };
 
+///////////////////////
+// FdDistributor //////
+///////////////////////
+
+
 //////////////////
 // ReifiedSpace //
 //////////////////
@@ -127,13 +132,11 @@ UnstableNode ReifiedSpace::askSpace(RichNode self, VM vm) {
   Space* space = getSpace();
 
   if (!space->isAdmissible(vm)){
-    std::cout<<"no es admisible "<<std::endl;
     raise(vm, vm->coreatoms.spaceAdmissible, self);
   }
 
   RichNode statusVar = *space->getStatusVar();
-  std::cout<<"obtieneRichNode" << std::endl;
-
+  
   if (matchesTuple(vm, statusVar, vm->coreatoms.succeeded, wildcard())) {
     return Atom::build(vm, vm->coreatoms.succeeded);
   } else {
