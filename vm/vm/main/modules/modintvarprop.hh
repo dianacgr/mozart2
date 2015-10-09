@@ -124,6 +124,22 @@ namespace mozart {
       
   //Distribute
 
+  class Distribute: public Builtin<Distribute> {
+      public:
+	Distribute(): Builtin("distribute") {}
+	static void call(VM vm, In selVar, In selVal, In v) {
+	  assert(vm->getCurrentSpace()->hasConstraintSpace());
+	  Space* homeSpace = vm->getCurrentSpace();
+	  //GecodeSpace& homeCst = vm->getCurrentSpace()->getCstSpace(true);
+	  nativeint var=selVar.as<SmallInt>().value();
+	  nativeint val=selVal.as<SmallInt>().value();
+	  std::cout<<"El espacio tiene distribuidor?: "<<homeSpace->hasDistributor()<<std::endl;
+	  ChooseDistributor* distributor = new ChooseDistributor(vm, homeSpace, 2);
+	  UnstableNode* un = distributor->getVar();
+	  
+	  std::cout << "will choose a distributor var: " <<var<<"val: "<<un<< std::endl; 
+	}
+      };
 
     }; // class ModIntVarProp
   } // namespace builtins

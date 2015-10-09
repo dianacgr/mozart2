@@ -49,37 +49,6 @@ prepare
    % 		    bnd: 'ICL_BND'
    % 		    dom: 'ICL_DOM')
 
-   FdIntVarBranch = '#'(none:            'INT_VAR_NONE'
-                        rnd:             'INT_VAR_RND'
-                        degree_min:      'INT_VAR_DEGREE_MIN'
-                        degree_max:      'INT_VAR_DEGREE_MAX'
-                        afc_min:         'INT_VAR_AFC_MIN'
-                        min_min:         'INT_VAR_MIN_MIN'
-                        min_max:         'INT_VAR_MIN_MAX'
-                        max_min:         'INT_VAR_MAX_MIN'
-                        max_max:         'INT_VAR_MAX_MAX'
-                        size_min:        'INT_VAR_SIZE_MIN'
-                        size_max:        'INT_VAR_SIZE_MAX'
-                        size_degree_min: 'INT_VAR_SIZE_DEGREE_MIN'
-                        size_degree_max: 'INT_VAR_SIZE_DEGREE_MAX'
-                        size_afc_min:    'INT_VAR_SIZE_AFC_MIN'
-                        size_afc_max:    'INT_VAR_SIZE_AFC_MAX'
-                        regret_min_min:  'INT_VAR_REGRET_MIN_MIN'
-                        regret_min_max:  'INT_VAR_REGRET_MIN_MAX'
-                        regret_max_min:  'INT_VAR_REGRET_MAX_MIN'
-                        regret_max_max:  'INT_VAR_REGRET_MAX_MAX')
-
-   FdIntValBranch = '#'(val_min:         'INT_VAL_MIN'
-                        val_med:         'INT_VAL_MED'
-                        val_max:         'INT_VAL_MAX'
-                        val_rad:         'INT_VAL_RND'
-                        val_split_min:   'INT_VAL_SPLIT_MIN'
-                        val_split_max:   'INT_VAL_SPLIT_MAX'
-                        val_range_min:   'INT_VAL_RANGE_MIN'
-                        val_range_max:   'INT_VAL_RANGE_MAX'
-                        values_min:      'INT_VALUES_MIN'
-			values_max:      'INT_VALUES_MAX')
-
    FddOptVarMap = map(naive:   0
 		      size:    1
 		      min:     2
@@ -341,33 +310,64 @@ define
 	 {Space.show 'entroDistr'}
 	 case {PreProcessSpec RawSpec}
 	 of generic(value:SelVal order:SelVar) then
-	    {Space.show 'in case'}
 	    proc {Do Xs}
-	       {Space.show 'enDo'}
-	       %Stability = {Space.ask}
-	       E|Fs={ChooseAndRetFiltVars Xs SelVar Undet}
+	       {Space.waitStable}
+	       E|Fs={ChooseAndRetFiltVars Xs SelVar Fil}
 	    in
 	       if E\=unit then
-		  if {Undet E} then
-		     D={SelVal E}
-		%     Ask
-		  in
-		 %    Ask = {Space.ask}
-		     {Space.show 'before Case'}
-		     case {Space.choose 2}
-		     of 1 then {FdInt D        E}
-		     [] 2 then {FdInt compl(D) E}
-		     end
-		     {Do Fs}
+		  V={Select E}
+		  D={SelVal V}
+	       in
+		  {Space.waitStable}
+		  choice {FdInt D        V}
+		  []     {FdInt compl(D) V}
 		  end
+		  {Do Fs}
 	       end
 	    end
 	 in
 	    {Do {VectorToList Vec}}
+	 %end
+	    %{FDP.distribute FddOptVarMap.SelVar FddOptValMap.SelVal Vec}
 	 else
 	    raise malFormed(distribute)
 	    end
 	 end
       end
 
+  %    proc {FdDistribute RawSpec Vec}
+%	 case {PreProcessSpec RawSpec}
+%	 of opt(value:SelVal order:SelVar) then
+%	    {Wait {FDP.distribute FddOptVarMap.SelVar FddOptValMap.SelVal Vec}}
+%	 [] gen(value:     SelVal
+%		order:     Order
+%		select:    Select
+%		filter:    Fil
+%		procedure: Proc) then
+%	    if {Width Vec}>0 then
+%	       proc {Do Xs}
+%		  {Space.waitStable}
+%		  E|Fs={ChooseAndRetFiltVars Xs Order Fil}
+%	       in
+%		  if E\=unit then
+%		     V={Select E}
+%		     D={SelVal V}
+%		  in
+%		     if Proc\=unit then
+%			{Proc}
+%			{Space.waitStable}
+%		     end
+%		     choice {FdInt D        V}
+%		     []     {FdInt compl(D) V}
+%		     end
+%		     {Do Fs}
+%		  end
+%	       end
+%	    in
+%	       {Do {VectorToList Vec}}
+%	    end
+%	 end
+ %     end
+
+      
 end
