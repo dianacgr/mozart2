@@ -638,6 +638,10 @@ struct Interface<SpaceLike>:
   bool isSpace(RichNode self, VM vm) {
     return false;
   }
+  
+  /*bool isStable(RichNode self, VM vm){
+	return false;
+  }*/
 
   UnstableNode askSpace(RichNode self, VM vm) {
     raiseTypeError(vm, "Space", self);

@@ -324,6 +324,7 @@ void MergedSpace::inspectSpace(VM vm) {
 
 }
 
+
 }
 
 #endif // MOZART_GENERATOR

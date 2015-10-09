@@ -73,7 +73,15 @@ public:
       result = SpaceLike(space).askSpace(vm);
     }
   };
-
+  
+  /*class IsStable: public Builtin<isStable>{
+  public:
+	IsStable(): Builtin("isStable") {}
+	static void call(VM vm, In space, Out result) {
+      result = SpaceLike(space).askSpace(vm);
+    }
+  }
+*/
   class AskVerbose: public Builtin<AskVerbose> {
   public:
     AskVerbose(): Builtin("askVerbose") {}
@@ -160,6 +168,11 @@ public:
     Inspect(): Builtin("inspect") {}
 
     static void call(VM vm, In space) {
+		
+		Space* sp = vm->getCurrentSpace();
+		if (sp->hasDistributor()) {
+			std::cout<<"has distributor"<<std::endl;
+		}
       SpaceLike(space).inspectSpace(vm);
     }
   };

@@ -32,7 +32,9 @@ functor
 require
    FDB at 'x-oz://boot/IntVar'
    FDP at 'x-oz://boot/IntVarProp'
+   Space at 'x-oz://boot/Space'
    Error(registerFormatter)
+   
 
 prepare
 
@@ -100,6 +102,8 @@ export
    is:              FdIs
    isIn:            FdIsIn
    value:           FdValue
+   min:             FdMin
+   max:             FdMax
    
 %%% Telling Domains
    int:            FdInt
@@ -128,7 +132,8 @@ define
 
    FdInf = FDB.inf
    FdSup = FDB.sup
-
+   FdMin = FDB.min
+   FdMax = FDB.max
    
    %%% Telling Domains
 
@@ -251,21 +256,116 @@ define
 %%% DISTRIBUTION
 
       fun {PreProcessSpec Spec}
-	 case Spec of naive then generic(value:min order:naive)
-	 [] ff then generic(value:min order:size)
-	 [] split then generic(value:splitMin order:size)
+	 case Spec of naive then
+	    {Space.show 'inPreProcessSpec'}
+	    generic(value:FdMin order:Naive)
+	 [] ff then generic(value:FdMin order:Size)
+	 [] split then generic(value:splitMin order:Size)
 	 else
 	    raise malFormed(spec)
 	    end
 	 end
       end
+      
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   AUXILIAR FUNCTIONS FOR DISTRIBUTION
+      
+      %Find if a variable is undetermined
+      fun {Undet Var}
+	 if {FdMin Var}\={FdMax Var} then
+	    true
+	 else
+	    false
+	 end
+      end
 
+      fun {Naive X Y}
+	 {Space.show 'In Naive'}
+	 false
+      end
+
+      fun {Size X Y}
+	 Sx = {FdMax X} - {FdMin X}
+	 Sy = {FdMax Y} - {FdMin Y}
+      in
+	 Sx<Sy
+      end
+
+
+      fun {VectorToType V}
+	 if {IsList V}       then list
+	 elseif {IsTuple V}  then tuple
+	 elseif {IsRecord V} then record
+	 else
+	    {Exception.raiseError
+	     kernel(type VectorToType [V] vector 1
+		    'Vector as input argument expected.')} illegal
+	 end
+      end
+
+      R2L = Record.toList
+      
+      fun {VectorToList V}
+	 if {VectorToType V}==list then
+	    {Space.show 'in Vector tolist'}
+	    V
+	 else {R2L V}
+	 end
+      end
+      
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+      
+      %Filter variables and return a list with the variables and the choosen one
+      fun{ChooseAndRetFiltVars Vars Order Filter}
+	 {Space.show 'en ChooseAndRet...'}
+	 NewVars
+          fun {Loop Vars Accu NewTail}
+             case Vars of nil then
+                NewTail=nil
+                Accu|NewVars
+             [] H|T then
+                if {Filter H} then LL in NewTail=(H|LL)
+                   {Loop T
+                    if Accu==unit orelse {Order H Accu}
+                    then H else Accu end
+                    LL}
+                else {Loop T Accu NewTail} end
+             end
+          end
+       in
+          {Loop Vars unit NewVars}
+      end
+      
+      %distribution using only naive, ff and split
       proc {FdDistribute RawSpec Vec}
+	 {Space.show 'entroDistr'}
 	 case {PreProcessSpec RawSpec}
 	 of generic(value:SelVal order:SelVar) then
-	    {FDP.distribute FddOptVarMap.SelVar FddOptValMap.SelVal Vec}
+	    {Space.show 'in case'}
+	    proc {Do Xs}
+	       {Space.show 'enDo'}
+	       %Stability = {Space.ask}
+	       E|Fs={ChooseAndRetFiltVars Xs SelVar Undet}
+	    in
+	       if E\=unit then
+		  if {Undet E} then
+		     D={SelVal E}
+		%     Ask
+		  in
+		 %    Ask = {Space.ask}
+		     {Space.show 'before Case'}
+		     case {Space.choose 2}
+		     of 1 then {FdInt D        E}
+		     [] 2 then {FdInt compl(D) E}
+		     end
+		     {Do Fs}
+		  end
+	       end
+	    end
+	 in
+	    {Do {VectorToList Vec}}
 	 else
-	    raise malFormed(post)
+	    raise malFormed(distribute)
 	    end
 	 end
       end
